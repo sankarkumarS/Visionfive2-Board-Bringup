@@ -1,0 +1,72 @@
+Index: git/source/sysevent/server/syseventd_main.c
+===================================================================
+--- git.orig/source/sysevent/server/syseventd_main.c
++++ git/source/sysevent/server/syseventd_main.c
+@@ -205,6 +205,54 @@ int sanity_thread_abort = 0;
+ // structure to maintain general failure statistics
+ se_stat_info_t stat_info;
+ 
++
++#define _sprintf_s_chk _sprintf_s_chk1
++#define _strcat_s_chk _strcat_s_chk1
++
++errno_t _strcat_s_chk1(char *dest, size_t dmax, const char *src, size_t slen) {
++    // Ensure the destination buffer and source string are valid
++    if (dest == NULL || src == NULL) {
++        return -1;  // Invalid argument error
++    }
++
++    // Check if the destination buffer is large enough to hold the concatenated string
++    size_t dest_len = strlen(dest);
++    if (dest_len + slen + 1 > dmax) {  // +1 for null terminator
++        return -1;  // Error: destination buffer is too small
++    }
++
++    // Safely concatenate the source string to the destination buffer
++    strncat(dest, src, slen);  // strncat ensures we don't overrun the buffer
++
++    return 0;  // Success
++}
++
++
++int _sprintf_s_chk1(char *dest, size_t dmax, const char *format, ...) {
++    // Ensure the destination buffer and format are valid
++    if (dest == NULL || format == NULL) {
++        return -1;  // Error: invalid argument
++    }
++
++    va_list args;
++    int ret;
++
++    // Start argument processing
++    va_start(args, format);
++
++    // Use snprintf to safely copy the formatted string into the destination buffer
++    ret = vsnprintf(dest, dmax, format, args);
++
++    va_end(args);
++
++    // Return the number of characters written (excluding the null terminator)
++    if (ret < 0 || ret >= dmax) {
++        return -1;  // Error or truncated string
++    }
++
++    return ret;  // Success
++}
++
+ /*
+  * daemon initialization code
+  */
+Index: git/source/utapi/lib/utapi.c
+===================================================================
+--- git.orig/source/utapi/lib/utapi.c
++++ git/source/utapi/lib/utapi.c
+@@ -54,7 +54,7 @@
+ #include <syscfg/syscfg.h>
+ #include <utctx/utctx.h>
+ #include <utctx/utctx_api.h>
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ #include "utapi.h"
+ #include "utapi_product.h"
+ #include "utapi_util.h"

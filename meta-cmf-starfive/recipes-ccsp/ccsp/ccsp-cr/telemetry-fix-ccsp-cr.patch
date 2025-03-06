@@ -1,0 +1,114 @@
+Index: git/source/CCSP_CR/ccsp_cr_utility.c
+===================================================================
+--- git.orig/source/CCSP_CR/ccsp_cr_utility.c
++++ git/source/CCSP_CR/ccsp_cr_utility.c
+@@ -87,7 +87,7 @@
+ 
+ #include "ccsp_base_api.h"
+ 
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ 
+ /**********************************************************************
+ 
+@@ -402,7 +402,8 @@ CcspCrDumpObject
+ 			  pCompInfo->pComponentName, pCompInfo->uVersion);
+ 		if (strstr(pCompInfo->pComponentName, "ccsp.tr069pa"))
+ 		{
+-		    t2_event_d("SYS_ERROR_TR69_Not_Registered", 1);
++		    //t2_event_d("SYS_ERROR_TR69_Not_Registered", 1);
++AnscTrace("#%.2lu %s v%lu RegSucceeded\n", i, pCompInfo->pComponentName, pCompInfo->uVersion);
+ 		}
+             }
+             else if( pCompInfo->uStatus == CCSP_Component_RegSuccessful)
+Index: git/source/CrSsp/ssp_dbus.c
+===================================================================
+--- git.orig/source/CrSsp/ssp_dbus.c
++++ git/source/CrSsp/ssp_dbus.c
+@@ -54,7 +54,7 @@
+ #include "ccsp_message_bus.h"
+ #include "ccsp_trace.h"
+ 
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ 
+ extern PCCSP_CR_MANAGER_OBJECT                     g_pCcspCrMgr;
+ extern void*                                       g_pDbusHandle;
+@@ -1262,25 +1262,7 @@ waitingForSystemReadyTask(ANSC_HANDLE  h
+ 
+             if( pCompInfo != NULL)
+             {
+-                if( pCompInfo->uStatus == CCSP_Component_NotRegistered)
+-                {
+-		    AnscTrace("System Not Ready!!!! '%s' v%lu NotRegistered\n",
+-			     pCompInfo->pComponentName, pCompInfo->uVersion);
+-		    if (strstr(pCompInfo->pComponentName, "ccsp.cm"))
+-		    {
+-			t2_event_d("SYS_ERROR_CM_Not_Registered", 1);
+-		    }
+-		    else if (strstr(pCompInfo->pComponentName, "ccsp.psm"))
+-		    {
+-			t2_event_d("SYS_ERROR_PSM_Not_Registered", 1);
+-		    }
+-		    else if (strstr(pCompInfo->pComponentName, "ccsp.wifi"))
+-		    {
+-			t2_event_d("SYS_ERROR_WIFI_Not_Registered", 1);
+-		    }
+-                    break;
+-                }
+-                else if( pCompInfo->uStatus != CCSP_Component_RegSuccessful)
++                if( pCompInfo->uStatus != CCSP_Component_RegSuccessful)
+                 {
+                     AnscTrace("System Not Ready!!!! '%s' v%lu RegisterFailed\n", pCompInfo->pComponentName, pCompInfo->uVersion);
+                     break;
+Index: git/source/CrSsp/ssp_main.c
+===================================================================
+--- git.orig/source/CrSsp/ssp_main.c
++++ git/source/CrSsp/ssp_main.c
+@@ -48,12 +48,12 @@
+ #include "ssp_global.h"
+ #include "syscfg/syscfg.h"
+ #include "cap.h"
+-#include "telemetry_busmessage_sender.h"
++//#include "telemetry_busmessage_sender.h"
+ 
+ static cap_user appcaps;
+ 
+ #ifdef INCLUDE_BREAKPAD
+-#include "breakpad_wrapper.h"
++//#include "breakpad_wrapper.h"
+ #endif
+ #define DEBUG_INI_NAME  "/etc/debug.ini"
+ 
+@@ -290,7 +290,7 @@ int main(int argc, char* argv[])
+     }
+ 
+ #ifdef INCLUDE_BREAKPAD
+-    breakpad_ExceptionHandler();
++   // breakpad_ExceptionHandler();
+ #else
+     signal(SIGTERM, sig_handler);
+     signal(SIGINT, sig_handler);
+@@ -307,7 +307,7 @@ int main(int argc, char* argv[])
+     signal(SIGPIPE, SIG_IGN);
+ 
+ #endif
+-    t2_init("ccsp-cr");
++   // t2_init("ccsp-cr");
+ 
+         if(CRRbusOpen() != 0)
+         {
+Index: git/source/Makefile.am
+===================================================================
+--- git.orig/source/Makefile.am
++++ git/source/Makefile.am
+@@ -43,7 +43,8 @@ CcspCrSsp_SOURCES = \
+ 	CCSP_CR/ccsp_cr_profile.c \
+ 	CCSP_CR/ccsp_cr_session.c \
+ 	CCSP_CR/ccsp_cr_utility.c
+-CcspCrSsp_LDFLAGS += -lccsp_common -lsyscfg -ltelemetry_msgsender -lprivilege $(SYSTEMD_LDFLAGS) -lpthread
++#CcspCrSsp_LDFLAGS += -lccsp_common -lsyscfg -ltelemetry_msgsender -lprivilege $(SYSTEMD_LDFLAGS) -lpthread
++CcspCrSsp_LDFLAGS += -lccsp_common -lsyscfg  -lprivilege $(SYSTEMD_LDFLAGS) -lpthread
+ if RBUS_BUILD_INTEGRATED
+ CcspCrSsp_SOURCES += CrSsp/ssp_rbus.c
+ CcspCrSsp_LDFLAGS += -lrbus -lrtMessage -lxml2

@@ -1,0 +1,132 @@
+#!/usr/bin/env bash
+##########################################################################
+# If not stated otherwise in this file or this component's Licenses.txt
+# file the following copyright and licenses apply:
+#
+# Copyright 2021 RDK Management
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+##########################################################################
+unset _RDK_FLAVOR
+
+TOP_DIR=$(pwd)
+export RDK_BSP_LAYER=none
+
+# default BSP layer is meta-cmf-starfive for R-PI builds
+export RDK_BSP_LAYER=meta-cmf-starfive
+
+MACHINE_NAME=$MACHINE
+
+source meta-cmf/setup-environment
+if [ $? -ne 0 ]; then
+    return 1
+fi
+
+# at this point the current directory should be the build dir
+BUILD_DIR=$(pwd)
+
+if [[ $(grep '^BBLAYERS' conf/bblayers.conf | grep -c 'meta-cmf-starfive') -eq 0 ]] && [[ -d  ../meta-cmf-starfive ]]
+then
+    cat >> conf/bblayers.conf <<EOF
+BBLAYERS =+ "\${RDKROOT}/meta-cmf-starfive"
+EOF
+fi
+
+if [[ $(grep '^BBLAYERS' conf/bblayers.conf | grep -c 'meta-rdk-opensync') -eq 0 ]] && [[ -d  ../meta-rdk-opensync ]]
+then
+    cat >> conf/bblayers.conf <<EOF
+BBLAYERS =+ "\${RDKROOT}/meta-rdk-opensync"
+EOF
+fi
+
+# Add meta-starfive only if not already present.
+if [[ $(grep '^BBLAYERS' conf/bblayers.conf | grep -c 'meta-starfive') -eq 0 ]] && [[ -d  ../meta-starfive ]]
+then
+    cat >> conf/bblayers.conf <<EOF
+BBLAYERS =+ "\${RDKROOT}/meta-starfive"
+EOF
+fi
+
+# Add meta-cmf-starfive-restricted only if not already present.
+
+# Add meta-rdk-opensync only if not already present.
+
+# Add meta-beegol-agent only if not already present.
+
+# ${_RDK_FLAVOR} value should be available from meta-rdk/setup-environment
+# Hack: sometimes _RDK_FLAVOR doesn't seem to persist in the environment.
+if [ -z "$_RDK_FLAVOR" ]; then
+    if [[ ! -z $(grep 'rdkb' conf/local.conf) ]]
+    then
+        _RDK_FLAVOR="rdkb"
+    fi
+fi
+
+
+# Add meta-rtlwifi only if not already present for RDK-V
+if [ "${_RDK_FLAVOR}" = "rdkb" ]
+then
+    if [[ $(grep '^BBLAYERS' conf/bblayers.conf | grep -c 'meta-rtlwifi') -eq 0 ]] && [[ -d  ../meta-rtlwifi ]]
+    then
+        cat >> conf/bblayers.conf <<EOF
+BBLAYERS =+ "\${RDKROOT}/meta-rtlwifi"
+EOF
+    fi
+fi
+_RDK_FLAVOR = "rdkb"
+
+# replace RDK FLAVOR to set BBMASKS
+sed -e "s|##RDK_FLAVOR##|${_RDK_FLAVOR}|g" -i $TOP_DIR/meta-cmf-starfive/conf/layer.conf
+#if [ "$BUILD_FOR_UBOOT" = "1" ]; then
+#     if [ "$(grep -w \@NAME $TOP_DIR/meta-cmf-starfive/conf/machine/$MACHINE_NAME.conf | cut -d '-' -f2)" = "64" ] || [ "$(grep -w \@arch $TOP_DIR/meta-cmf-raspberrypi/conf/machine/$MACHINE_NAME.conf | cut -d ':' -f2 | cut -d ' ' -f2)" = "64" ]; then
+#        echo "KERNEL_IMAGETYPE = \"Image\"" >> conf/local.conf
+ #    else
+ #       echo "KERNEL_IMAGETYPE = \"uImage\"" >> conf/local.conf
+ #    fi
+ #    echo "RPI_USE_U_BOOT = \"1\"" >> conf/local.conf
+ #    unset BUILD_FOR_UBOOT
+#fi
+
+#if [ "${RDK_ENABLE_REFERENCE_IMAGE}" = "y" ]; then
+ #   if [ $(grep conf/local.conf -c -e 'reference.inc') -eq 0 ]; then
+  #      echo "require conf/distro/include/reference.inc" >>  conf/local.conf
+   #     echo "export RDK_ENABLE_REFERENCE_IMAGE = \"y\"" >> conf/local.conf
+   # fi
+        source $TOP_DIR/meta-cmf-broadband/setup-environment
+#fi
+echo "!!! Configured RDK Flavor ${_RDK_FLAVOR}"
+if [ "${_RDK_FLAVOR}" = "rdkb" ]; then
+    if [  -e "${TOP_DIR}/meta-cmf-broadband/setup-environment" ]; then
+       # source $TOP_DIR/meta-cmf-broadband/setup-environment
+     echo "temp"
+    fi
+fi
+
+LOCAL_CONF="conf/local.conf"
+
+# Check if the file exists
+if [ -f "$LOCAL_CONF" ]; then
+    echo "$LOCAL_CONF exists."
+
+    # Use sed to modify the value of a variable (e.g., set MACHINE to starfive-starfive-jh7110)
+#    sed -i 's/^MACHINE=star*.*/MACHINE="starfive-starfive-jh7110"/' "$LOCAL_CONF"
+#sed -i 's/starfive-starfive-jh7110-rdk-broadband/starfive-visionfive2-jh7110/' conf/local.conf
+
+    # Confirm the change
+    echo "Updated MACHINE in $LOCAL_CONF to starfive-starfive-jh7110"
+
+else
+    # If the file does not exist, print an error message
+    echo "$LOCAL_CONF does not exist. Please check the file path."
+fi
+

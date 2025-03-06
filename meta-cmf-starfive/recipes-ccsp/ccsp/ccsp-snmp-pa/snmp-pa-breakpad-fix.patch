@@ -1,0 +1,22 @@
+Index: git/source/SnmpPlugin/CcspSnmpPlugin.c
+===================================================================
+--- git.orig/source/SnmpPlugin/CcspSnmpPlugin.c
++++ git/source/SnmpPlugin/CcspSnmpPlugin.c
+@@ -63,7 +63,7 @@
+ #include "safec_lib_common.h"
+ 
+ #ifdef INCLUDE_BREAKPAD
+-#include "breakpad_wrapper.h"
++//#include "breakpad_wrapper.h"
+ #endif /* INCLUDE_BREAKPAD */
+ 
+ #ifdef RDKB_MIB
+@@ -146,7 +146,7 @@ init_ccsp_snmp_plugin(void)
+ #endif
+ 
+ #ifdef INCLUDE_BREAKPAD
+-	breakpad_ExceptionHandler( );
++	//breakpad_ExceptionHandler( );
+ #endif /* INCLUDE_BREAKPAD */
+ 
+ 	/* init the COSA debus */

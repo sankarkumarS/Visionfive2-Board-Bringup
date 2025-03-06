@@ -1,0 +1,130 @@
+Index: git/source/DHCPClientUtils/DHCPv4Client/service_udhcpc/service_udhcpc.c
+===================================================================
+--- git.orig/source/DHCPClientUtils/DHCPv4Client/service_udhcpc/service_udhcpc.c
++++ git/source/DHCPClientUtils/DHCPv4Client/service_udhcpc/service_udhcpc.c
+@@ -68,7 +68,7 @@
+ #include <sys/socket.h>
+ #include <stdbool.h>
+ #include <regex.h>
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ #include <stdint.h>
+ #include "secure_wrapper.h"
+ #include <libnet.h>
+@@ -472,7 +472,6 @@ int update_dns_tofile (udhcpc_script_t *
+                     {
+                         DHCPMGR_LOG_INFO ("uptime  %s tok : %s",uptime,tok);
+ 			OnboardLog("DNS_server_IP_changed:%s\n",uptime);
+-                        t2_event_s("bootuptime_dnsIpChanged_split", uptime);
+                         v_secure_system("echo %s DNS_server_IP_changed:%s >> "CONSOLE_LOG_FILE,utc_time,uptime);
+                         v_secure_system("echo %s >> /tmp/.ipv4dnsserver",tok);
+                     }
+Index: git/source/DHCPServerUtils/DHCPv4Server/dhcp_server_functions.c
+===================================================================
+--- git.orig/source/DHCPServerUtils/DHCPv4Server/dhcp_server_functions.c
++++ git/source/DHCPServerUtils/DHCPv4Server/dhcp_server_functions.c
+@@ -31,7 +31,7 @@
+ #include "errno.h"
+ #include "util.h"
+ #include "dhcp_server_functions.h"
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ #include <ccsp_psm_helper.h>
+ #include <ccsp_base_api.h>
+ #include <ccsp_memory.h>
+@@ -1390,7 +1390,6 @@ int prepare_dhcp_conf (char *input)
+               else
+               {
+                      DHCPMGR_LOG_INFO("DHCP SERVER : WiFi SSID and Passphrase are not modified,set CAPTIVE_PORTAL_MODE");
+-                     t2_event_d("SYS_INFO_CaptivePortal", 1);
+                      if (access("/nvram/reverted", F_OK) == 0) //If file is present
+                      {
+                        DHCPMGR_LOG_INFO("DHCP SERVER : Removing reverted flag");
+@@ -1410,7 +1409,6 @@ int prepare_dhcp_conf (char *input)
+            {
+               l_bCaptivePortal_Mode = TRUE;
+               DHCPMGR_LOG_INFO("DHCP SERVER : WiFi SSID and Passphrase are not modified,set CAPTIVE_PORTAL_MODE");
+-              t2_event_d("SYS_INFO_CaptivePortal", 1);
+               if (access("/nvram/reverted", F_OK) == 0) //If file is present
+               {
+                  DHCPMGR_LOG_INFO("DHCP SERVER : Removing reverted flag");
+Index: git/source/DHCPClientUtils/DHCPv4Client/Makefile.am
+===================================================================
+--- git.orig/source/DHCPClientUtils/DHCPv4Client/Makefile.am
++++ git/source/DHCPClientUtils/DHCPv4Client/Makefile.am
+@@ -33,4 +33,4 @@ libCcspDhcpMgr_Dhcpv4Client_la_CPPFLAGS
+ 
+ libCcspDhcpMgr_Dhcpv4Client_la_SOURCES = service_dhcpv4_client.c dhcp_client_common.c dhcpv4_client_utils.c udhcpc_client_utils.c
+ 
+-libCcspDhcpMgr_Dhcpv4Client_la_LIBADD = -lccsp_common -ltelemetry_msgsender -lulog -lsyscfg -lsysevent -ltime_conversion -lprint_uptime -lhal_platform -lnet
++libCcspDhcpMgr_Dhcpv4Client_la_LIBADD = -lccsp_common  -lulog -lsyscfg -lsysevent  -lprint_uptime -lhal_platform -lnet
+Index: git/source/DHCPClientUtils/DHCPv4Client/service_udhcpc/Makefile.am
+===================================================================
+--- git.orig/source/DHCPClientUtils/DHCPv4Client/service_udhcpc/Makefile.am
++++ git/source/DHCPClientUtils/DHCPv4Client/service_udhcpc/Makefile.am
+@@ -27,4 +27,4 @@ udhcpc_response_handler_CPPFLAGS = -I${P
+ 
+ udhcpc_response_handler_SOURCES = service_udhcpc.c
+ 
+-udhcpc_response_handler_LDADD = -ltelemetry_msgsender -lulog -lsyscfg -lsysevent -ltime_conversion -lprint_uptime -lnet
++udhcpc_response_handler_LDADD =  -lulog -lsyscfg -lsysevent  -lprint_uptime -lnet
+Index: git/source/DHCPClientUtils/DHCPv6Client/Makefile.am
+===================================================================
+--- git.orig/source/DHCPClientUtils/DHCPv6Client/Makefile.am
++++ git/source/DHCPClientUtils/DHCPv6Client/Makefile.am
+@@ -32,4 +32,4 @@ libCcspDhcpMgr_Dhcpv6Client_la_CPPFLAGS
+ 
+ libCcspDhcpMgr_Dhcpv6Client_la_SOURCES = service_dhcpv6_client.c dibbler_client_utils.c dhcpv6_client_utils.c
+ 
+-libCcspDhcpMgr_Dhcpv6Client_la_LIBADD = -lccsp_common -ltelemetry_msgsender -lulog -lsyscfg -lsysevent -ltime_conversion -lprint_uptime -lhal_platform -lnet
++libCcspDhcpMgr_Dhcpv6Client_la_LIBADD = -lccsp_common  -lulog -lsyscfg -lsysevent  -lprint_uptime -lhal_platform -lnet
+Index: git/source/DHCPMgrUtils/Makefile.am
+===================================================================
+--- git.orig/source/DHCPMgrUtils/Makefile.am
++++ git/source/DHCPMgrUtils/Makefile.am
+@@ -26,4 +26,4 @@ libCcspDhcpMgrUtils_la_CPPFLAGS = -I$(to
+ 
+ libCcspDhcpMgrUtils_la_SOURCES = cosa_common_util.c helpers.c
+ 
+-libCcspDhcpMgrUtils_la_LIBADD = -lccsp_common -ltelemetry_msgsender -lulog -lsyscfg -lsysevent -ltime_conversion -lprint_uptime
++libCcspDhcpMgrUtils_la_LIBADD = -lccsp_common  -lulog -lsyscfg -lsysevent  -lprint_uptime
+Index: git/source/DHCPServerUtils/DHCPv4Server/Makefile.am
+===================================================================
+--- git.orig/source/DHCPServerUtils/DHCPv4Server/Makefile.am
++++ git/source/DHCPServerUtils/DHCPv4Server/Makefile.am
+@@ -31,4 +31,4 @@ libCcspDhcpMgr_Dhcpv4Server_la_CPPFLAGS
+ 
+ libCcspDhcpMgr_Dhcpv4Server_la_SOURCES = dhcp_server_functions.c service_dhcp_server.c dhcpv4_server_interface.c
+ 
+-libCcspDhcpMgr_Dhcpv4Server_la_LIBADD = -lccsp_common -ltelemetry_msgsender -lulog -lsyscfg -lsysevent -ltime_conversion -lprint_uptime -lnet
++libCcspDhcpMgr_Dhcpv4Server_la_LIBADD = -lccsp_common  -lulog -lsyscfg -lsysevent  -lprint_uptime -lnet
+Index: git/source/DHCPServerUtils/DHCPv6Server/Makefile.am
+===================================================================
+--- git.orig/source/DHCPServerUtils/DHCPv6Server/Makefile.am
++++ git/source/DHCPServerUtils/DHCPv6Server/Makefile.am
+@@ -37,4 +37,4 @@ if BCI_SUPPORT
+ libCcspDhcpMgr_Dhcpv6Server_la_SOURCES += service_ipv6.c
+ endif
+ 
+-libCcspDhcpMgr_Dhcpv6Server_la_LIBADD = -lccsp_common -ltelemetry_msgsender -lulog -lsyscfg -lsysevent -ltime_conversion -lprint_uptime -lnet
++libCcspDhcpMgr_Dhcpv6Server_la_LIBADD = -lccsp_common -lulog -lsyscfg -lsysevent  -lprint_uptime -lnet
+Index: git/source/TR-181/board_sbapi/Makefile.am
+===================================================================
+--- git.orig/source/TR-181/board_sbapi/Makefile.am
++++ git/source/TR-181/board_sbapi/Makefile.am
+@@ -38,4 +38,4 @@ libCcspDhcpMgr_board_sbapi_la_SOURCES =
+ if FEATURE_SUPPORT_MAPT_NAT46
+ libCcspDhcpMgr_board_sbapi_la_SOURCES += cosa_mapt_apis.c
+ endif
+-libCcspDhcpMgr_board_sbapi_la_LDFLAGS = -lccsp_common -lhal_moca -lulog -lsyscfg -lsysevent -ltime_conversion -llmapi -lwebconfig_framework -lmsgpackc -lcm_mgnt -lnet  -lnanomsg
++libCcspDhcpMgr_board_sbapi_la_LDFLAGS = -lccsp_common -lhal_moca -lulog -lsyscfg -lsysevent  -llmapi -lwebconfig_framework -lmsgpackc -lcm_mgnt -lnet  -lnanomsg
+Index: git/source/DHCPMgrSsp/Makefile.am
+===================================================================
+--- git.orig/source/DHCPMgrSsp/Makefile.am
++++ git/source/DHCPMgrSsp/Makefile.am
+@@ -50,4 +50,4 @@ CcspDHCPMgr_DEPENDENCIES = \
+ CcspDHCPMgr_CFLAGS = $(SYSTEMD_CFLAGS) $(NONROOT_CFLAGS)
+ CcspDHCPMgr_SOURCES = ssp_messagebus_interface.c ssp_main.c ssp_action.c dm_pack_datamodel.c
+ CcspDHCPMgr_LDFLAGS = -rdynamic $(SYSTEMD_LDFLAGS) -pthread
+-CcspDHCPMgr_LDADD = $(CcspDHCPMgr_DEPENDENCIES) -lccsp_common -lsyscfg -ldl -lrbus
++CcspDHCPMgr_LDADD = $(CcspDHCPMgr_DEPENDENCIES)  -lccsp_common -lsyscfg -ldl -lrbus

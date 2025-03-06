@@ -1,0 +1,2 @@
+CFLAGS_append = " -UINCLUDE_BREAKPAD"
+

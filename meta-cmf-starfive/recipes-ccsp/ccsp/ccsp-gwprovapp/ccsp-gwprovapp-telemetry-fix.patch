@@ -1,0 +1,134 @@
+Index: git/source/gw_prov_sm.c
+===================================================================
+--- git.orig/source/gw_prov_sm.c
++++ git/source/gw_prov_sm.c
+@@ -93,7 +93,7 @@
+ #endif
+ 
+ 
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ #include "safec_lib_common.h"
+ 
+ #if defined(ENABLE_LLD_SUPPORT) 
+@@ -1012,10 +1012,6 @@ static int GWP_SysCfgSetInt(const char *
+ {
+    GWPROV_PRINT(" %s : name = %s , value = %d \n", __FUNCTION__, name, int_value);
+ 
+-   if ((strcmp(name, "last_erouter_mode") == 0) && (int_value == 2))
+-   {
+-       t2_event_d("SYS_INFO_ERouter_Mode_2", 1);
+-   }
+ 
+    return syscfg_set_u(NULL, name, int_value);
+ }
+@@ -1625,9 +1621,6 @@ static void check_lan_wan_ready()
+ 	GWPROV_PRINT(" wan-status = %s\n", wan_st);
+ 	GWPROV_PRINT(" ipv6_prefix = %s\n", ipv6_prefix);
+ 	GWPROV_PRINT(" eRouterMode = %d\n", eRouterMode);
+-	if (eRouterMode == 2) {
+-		t2_event_d("SYS_INFO_ErouterMode2", 1);
+-	}
+ 	GWPROV_PRINT(" bridge_mode = %d\n", bridge_mode);
+ 
+ 	if (bridge_mode != 0 || eRouterMode == DOCESAFE_ENABLE_DISABLE_extIf)
+@@ -2369,7 +2362,6 @@ static int GWP_act_DocsisLinkDown_callba
+ #endif
+        printf("Stopping wan service\n");
+        GWPROV_PRINT(" Stopping wan service\n");
+-       t2_event_d("RF_ERROR_WAN_stop", 1);
+        sysevent_set(sysevent_fd_gs, sysevent_token_gs, "wan-stop", "", 0);
+ #if defined (_COSA_BCM_ARM_)
+        remove("/tmp/phylink_wan_state_up");
+@@ -3618,7 +3610,7 @@ int main(int argc, char *argv[])
+ 
+     printf("Started gw_prov_utopia\n");
+ 
+-    t2_init("ccsp-gwprovapp");
++    //t2_init("ccsp-gwprovapp");
+ 
+ #if !defined(_PLATFORM_RASPBERRYPI_)
+ 
+Index: git/source/gw_prov_sm_generic.c
+===================================================================
+--- git.orig/source/gw_prov_sm_generic.c
++++ git/source/gw_prov_sm_generic.c
+@@ -69,7 +69,7 @@
+ #include <syscfg/syscfg.h>
+ #include <pthread.h>
+ #include "Tr69_Tlv.h"
+-#include <autoconf.h>
++//#include <autoconf.h>
+ #ifdef AUTOWAN_ENABLE
+ #include "autowan.h"
+ #include "gw_prov_sm.h"
+@@ -87,7 +87,6 @@
+ #endif /*WIFI_MANAGE_SUPPORTED*/
+ 
+ #include "ccsp_hal_ethsw.h"
+-#include <telemetry_busmessage_sender.h>
+ #include "safec_lib_common.h"
+ 
+ #if defined(_XB6_PRODUCT_REQ_) || defined(_CBR2_PRODUCT_REQ_)
+@@ -684,9 +683,6 @@ STATIC void check_lan_wan_ready()
+ 	GWPROV_PRINT(" wan-status = %s\n", wan_st);
+ 	GWPROV_PRINT(" ipv6_prefix = %s\n", ipv6_prefix);
+ 	GWPROV_PRINT(" eRouterMode = %d\n", eRouterMode);
+-	if (eRouterMode == 2) {
+-		t2_event_d("SYS_INFO_ErouterMode2", 1);
+-	}
+ 	GWPROV_PRINT(" bridge_mode = %d\n", bridge_mode);
+ 
+ 	if (bridge_mode != 0 || eRouterMode == DOCESAFE_ENABLE_DISABLE_extIf)
+@@ -1504,7 +1500,7 @@ static int GWP_act_ProvEntry()
+         }
+     }
+ 
+-
++#if 0
+     //Get the ethwan interface name from HAL
+     memset( ethwan_ifname , 0, sizeof( ethwan_ifname ) );
+ 
+@@ -1521,6 +1517,7 @@ static int GWP_act_ProvEntry()
+     }
+ 
+     GWPROV_PRINT(" EthWanInterfaceName: %s \n", ethwan_ifname );
++#endif
+ 
+ #if defined (_BRIDGE_UTILS_BIN_) && (!defined (_WNXL11BWL_PRODUCT_REQ_) && !defined(_SCER11BEL_PRODUCT_REQ_))
+     if ( syscfg_set_commit( NULL, "eth_wan_iface_name", ethwan_ifname ) != 0 )
+@@ -1660,7 +1657,6 @@ int gw_prov_sm_main(int argc, char *argv
+ 
+    printf("Started gw_prov_utopia\n");
+ 
+-    t2_init("ccsp-gwprovapp");
+ 
+     #ifdef FEATURE_SUPPORT_RDKLOG
+        rdk_logger_init(DEBUG_INI_NAME);
+Index: git/source/gw_prov_sm_generic_main.c
+===================================================================
+--- git.orig/source/gw_prov_sm_generic_main.c
++++ git/source/gw_prov_sm_generic_main.c
+@@ -58,7 +58,7 @@
+ #include "ccsp_psm_helper.h"
+ #endif /*WIFI_MANAGE_SUPPORTED*/
+ 
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ #include "safec_lib_common.h"
+ #define DEBUG_INI_NAME  "/etc/debug.ini"
+ 
+Index: git/source/Makefile.am
+===================================================================
+--- git.orig/source/Makefile.am
++++ git/source/Makefile.am
+@@ -32,7 +32,8 @@ endif
+ gw_prov_utopia_CPPFLAGS = -I$(srcdir)/include -I${top_srcdir}/source
+ gw_prov_utopia_CPPFLAGS += -I${PKG_CONFIG_SYSROOT_DIR}$(includedir)/ccsp -I${PKG_CONFIG_SYSROOT_DIR}$(includedir)/dbus-1.0 -I${PKG_CONFIG_SYSROOT_DIR}$(libdir)/dbus-1.0/include
+ 
+-gw_prov_utopia_LDFLAGS = -lsysevent -lsyscfg -lulog -lsecure_wrapper -ltelemetry_msgsender -lpthread -lutapi -lutctx -lcm_mgnt -lccsp_common
++#gw_prov_utopia_LDFLAGS = -lsysevent -lsyscfg -lulog -lsecure_wrapper -ltelemetry_msgsender -lpthread -lutapi -lutctx -lcm_mgnt -lccsp_common
++gw_prov_utopia_LDFLAGS = -lsysevent -lsyscfg -lulog -lsecure_wrapper  -lpthread -lutapi -lutctx -lcm_mgnt -lccsp_common
+ 
+ if !PLATFORM_RASPBERRYPI_ENABLED
+ if !FEATURE_RDKB_WAN_MANAGER

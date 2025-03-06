@@ -1,0 +1,13 @@
+Index: net-snmp-5.9.1/snmplib/transports/snmpTLSBaseDomain.c
+===================================================================
+--- net-snmp-5.9.1.orig/snmplib/transports/snmpTLSBaseDomain.c
++++ net-snmp-5.9.1/snmplib/transports/snmpTLSBaseDomain.c
+@@ -56,7 +56,7 @@ int openssl_local_index;
+ 
+ #ifndef HAVE_ERR_GET_ERROR_ALL
+ /* A backport of the OpenSSL 1.1.1e ERR_get_error_all() function. */
+-static unsigned long ERR_get_error_all(const char **file, int *line,
++ unsigned long ERR_get_error_all(const char **file, int *line,
+                                        const char **func,
+                                        const char **data, int *flags)
+ {

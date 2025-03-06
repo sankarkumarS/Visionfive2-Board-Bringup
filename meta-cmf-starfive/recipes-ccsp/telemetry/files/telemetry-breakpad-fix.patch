@@ -1,0 +1,35 @@
+Index: git/source/t2ssp/ssp_main.c
+===================================================================
+--- git.orig/source/t2ssp/ssp_main.c
++++ git/source/t2ssp/ssp_main.c
+@@ -47,7 +47,7 @@
+ #endif
+ 
+ #ifdef INCLUDE_BREAKPAD
+-#include "breakpad_wrapper.h"
++//#include "breakpad_wrapper.h"
+ #endif
+ 
+ #include <semaphore.h>
+Index: git/source/telemetry2_0.c
+===================================================================
+--- git.orig/source/telemetry2_0.c
++++ git/source/telemetry2_0.c
+@@ -53,7 +53,7 @@
+ 
+ #ifdef INCLUDE_BREAKPAD
+ #ifndef ENABLE_RDKC_SUPPORT
+-#include "breakpad_wrapper.h"
++//#include "breakpad_wrapper.h"
+ #else
+ #include "breakpadwrap.h"
+ #endif
+@@ -222,7 +222,7 @@ static void t2DaemonMainModeInit( ) {
+      */
+ #ifdef INCLUDE_BREAKPAD
+ #ifndef ENABLE_RDKC_SUPPORT
+-    breakpad_ExceptionHandler();
++    //breakpad_ExceptionHandler();
+ #else
+     BreakPadWrapExceptionHandler eh;
+     eh = newBreakPadWrapExceptionHandler();

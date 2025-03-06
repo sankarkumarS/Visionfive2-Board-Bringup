@@ -1,0 +1,608 @@
+Index: git/source/pmon/Makefile.am
+===================================================================
+--- git.orig/source/pmon/Makefile.am
++++ git/source/pmon/Makefile.am
+@@ -34,5 +34,4 @@ pmon_CPPFLAGS = -I$(top_srcdir)/source/p
+ pmon_LDADD = $(top_builddir)/source/services/lib/libsrvmgr.la \
+              $(top_builddir)/source/sysevent/lib/libsysevent.la \
+              $(top_builddir)/source/ulog/libulog.la \
+-             $(top_builddir)/source/syscfg/lib/libsyscfg.la \
+-             -ltelemetry_msgsender
++             $(top_builddir)/source/syscfg/lib/libsyscfg.la
+Index: git/source/scripts/init/src/apply_system_defaults/Makefile.am
+===================================================================
+--- git.orig/source/scripts/init/src/apply_system_defaults/Makefile.am
++++ git/source/scripts/init/src/apply_system_defaults/Makefile.am
+@@ -28,8 +28,8 @@ AM_LDFLAGS = $(top_builddir)/source/serv
+              $(top_builddir)/source/ulog/libulog.la \
+              $(top_builddir)/source/utapi/lib/libutapi.la \
+              $(top_builddir)/source/utctx/lib/libutctx.la \
+-             -ltelemetry_msgsender \
+              -lcjson \
++	     -lsafec \
+ 	     -lccsp_common $(DBUS_LIBS)
+ 
+ if PLATFORM_HAL_SYNDICATION
+Index: git/source/scripts/init/src/apply_system_defaults_psm/Makefile.am
+===================================================================
+--- git.orig/source/scripts/init/src/apply_system_defaults_psm/Makefile.am
++++ git/source/scripts/init/src/apply_system_defaults_psm/Makefile.am
+@@ -30,7 +30,7 @@ AM_LDFLAGS = $(top_builddir)/source/serv
+              $(top_builddir)/source/ulog/libulog.la \
+              $(top_builddir)/source/utapi/lib/libutapi.la \
+              $(top_builddir)/source/utctx/lib/libutctx.la \
+-             -ltelemetry_msgsender \
++	     -lsafec \
+              -lcjson \
+              -lccsp_common $(DBUS_LIBS)
+ 
+Index: git/source/service_deviceMode/Makefile.am
+===================================================================
+--- git.orig/source/service_deviceMode/Makefile.am
++++ git/source/service_deviceMode/Makefile.am
+@@ -29,5 +29,4 @@ service_devicemode_LDADD = $(top_builddi
+                     $(top_builddir)/source/sysevent/lib/libsysevent.la \
+                     $(top_builddir)/source/syscfg/lib/libsyscfg.la \
+                     $(top_builddir)/source/ulog/libulog.la \
+-                    $(top_builddir)/source/util/print_uptime/libprint_uptime.la \
+-		    -ltelemetry_msgsender
++                    $(top_builddir)/source/util/print_uptime/libprint_uptime.la
+Index: git/source/service_dhcp/Makefile.am
+===================================================================
+--- git.orig/source/service_dhcp/Makefile.am
++++ git/source/service_dhcp/Makefile.am
+@@ -31,11 +31,10 @@ service_dhcp_CPPFLAGS = -I$(top_srcdir)/
+                         -I${PKG_CONFIG_SYSROOT_DIR}$(includedir)/dbus-1.0 \
+                         -I${PKG_CONFIG_SYSROOT_DIR}$(libdir)/dbus-1.0/include
+ 
+-service_dhcp_LDFLAGS = -lccsp_common $(DBUS_LIBS) -lsecure_wrapper
++service_dhcp_LDFLAGS = -lccsp_common $(DBUS_LIBS) -lsecure_wrapper -lrdkloggers
+ 
+ service_dhcp_LDADD = $(top_builddir)/source/util/utils/libutopiautil.la \
+                      $(top_builddir)/source/sysevent/lib/libsysevent.la \
+                      $(top_builddir)/source/syscfg/lib/libsyscfg.la \
+                      $(top_builddir)/source/util/print_uptime/libprint_uptime.la \
+-                     -ltelemetry_msgsender \
+                      -lnet
+Index: git/source/service_dhcpv6_client/Makefile.am
+===================================================================
+--- git.orig/source/service_dhcpv6_client/Makefile.am
++++ git/source/service_dhcpv6_client/Makefile.am
+@@ -34,5 +34,4 @@ service_dhcpv6_client_LDADD = $(top_buil
+                               $(top_builddir)/source/sysevent/lib/libsysevent.la \
+                               $(top_builddir)/source/syscfg/lib/libsyscfg.la \
+                               $(top_builddir)/source/util/print_uptime/libprint_uptime.la \
+-                              -ltelemetry_msgsender \
+                               -lnet
+Index: git/source/service_multinet/Makefile.am
+===================================================================
+--- git.orig/source/service_multinet/Makefile.am
++++ git/source/service_multinet/Makefile.am
+@@ -20,7 +20,7 @@ bin_PROGRAMS = service_multinet_exec
+ 
+ AUTOMAKE_OPTIONS = subdir-objects
+ 
+-AM_LDFLAGS = -lccsp_common -lsecure_wrapper $(DBUS_LIBS)
++AM_LDFLAGS = -lccsp_common -lsecure_wrapper $(DBUS_LIBS) -lsafec
+ 
+ if MULTILAN_FEATURE
+ if CCSP_PLATFORM_INTEL_PUMA7
+@@ -49,5 +49,4 @@ service_multinet_exec_LDADD = $(top_buil
+                               $(top_builddir)/source/services/lib/libsrvmgr.la \
+                               $(top_builddir)/source/sysevent/lib/libsysevent.la \
+                               $(top_builddir)/source/syscfg/lib/libsyscfg.la \
+-                              $(top_builddir)/source/ulog/libulog.la \
+-                              -ltelemetry_msgsender
++                              $(top_builddir)/source/ulog/libulog.la
+Index: git/source/service_routed/Makefile.am
+===================================================================
+--- git.orig/source/service_routed/Makefile.am
++++ git/source/service_routed/Makefile.am
+@@ -19,7 +19,7 @@
+ 
+ bin_PROGRAMS = service_routed
+ 
+-AM_LDFLAGS = -lsecure_wrapper
++AM_LDFLAGS = -lsecure_wrapper -lsafec
+ 
+ service_routed_SOURCES = service_routed.c
+ 
+@@ -38,5 +38,4 @@ service_routed_LDADD = $(top_builddir)/s
+                        $(top_builddir)/source/syscfg/lib/libsyscfg.la \
+                        $(top_builddir)/source/utapi/lib/libutapi.la \
+                        $(top_builddir)/source/utctx/lib/libutctx.la \
+-                       $(top_builddir)/source/ulog/libulog.la \
+-                       -ltelemetry_msgsender
++                       $(top_builddir)/source/ulog/libulog.la
+Index: git/source/service_udhcpc/Makefile.am
+===================================================================
+--- git.orig/source/service_udhcpc/Makefile.am
++++ git/source/service_udhcpc/Makefile.am
+@@ -32,7 +32,6 @@ service_udhcpc_LDADD = $(top_builddir)/s
+                        $(top_builddir)/source/sysevent/lib/libsysevent.la \
+                        $(top_builddir)/source/syscfg/lib/libsyscfg.la \
+                        $(top_builddir)/source/util/print_uptime/libprint_uptime.la \
+-                       $(top_builddir)/source/ulog/libulog.la \
+-                       -ltelemetry_msgsender
++                       $(top_builddir)/source/ulog/libulog.la
+ 
+-service_udhcpc_LDFLAGS = -lnanomsg -lsecure_wrapper
++service_udhcpc_LDFLAGS = -lnanomsg -lsecure_wrapper -lrdkloggers
+Index: git/source/service_wan/Makefile.am
+===================================================================
+--- git.orig/source/service_wan/Makefile.am
++++ git/source/service_wan/Makefile.am
+@@ -27,12 +27,11 @@ service_wan_CPPFLAGS = -I$(top_srcdir)/s
+                        -I${PKG_CONFIG_SYSROOT_DIR}$(includedir)/dbus-1.0 \
+                        -I${PKG_CONFIG_SYSROOT_DIR}$(libdir)/dbus-1.0/include
+ 
+-service_wan_LDFLAGS = -lsecure_wrapper
++service_wan_LDFLAGS = -lsecure_wrapper -lrdkloggers
+ 
+ service_wan_LDADD = $(top_builddir)/source/util/utils/libutopiautil.la \
+                     $(top_builddir)/source/services/lib/libsrvmgr.la \
+                     $(top_builddir)/source/sysevent/lib/libsysevent.la \
+                     $(top_builddir)/source/syscfg/lib/libsyscfg.la \
+                     $(top_builddir)/source/util/print_uptime/libprint_uptime.la \
+-                    $(top_builddir)/source/ulog/libulog.la \
+-                    -ltelemetry_msgsender
++                    $(top_builddir)/source/ulog/libulog.la
+Index: git/source/trigger/Makefile.am
+===================================================================
+--- git.orig/source/trigger/Makefile.am
++++ git/source/trigger/Makefile.am
+@@ -38,5 +38,4 @@ trigger_LDFLAGS = -lnetfilter_queue -lnf
+ trigger_LDADD = $(top_builddir)/source/services/lib/libsrvmgr.la \
+                 $(top_builddir)/source/sysevent/lib/libsysevent.la \
+                 $(top_builddir)/source/ulog/libulog.la \
+-                $(top_builddir)/source/syscfg/lib/libsyscfg.la \
+-                -ltelemetry_msgsender
++                $(top_builddir)/source/syscfg/lib/libsyscfg.la
+Index: git/source/utapi/lib/Makefile.am
+===================================================================
+--- git.orig/source/utapi/lib/Makefile.am
++++ git/source/utapi/lib/Makefile.am
+@@ -34,6 +34,6 @@ libutapi_la_CPPFLAGS = -I$(top_srcdir)/s
+                        -I${PKG_CONFIG_SYSROOT_DIR}$(includedir)/dbus-1.0 \
+                        -I${PKG_CONFIG_SYSROOT_DIR}$(libdir)/dbus-1.0/include
+ 
+-libutapi_la_LDFLAGS = -lsecure_wrapper -ltelemetry_msgsender
++libutapi_la_LDFLAGS = -lsecure_wrapper
+ 
+ libutapi_la_LIBADD = $(top_builddir)/source/ulog/libulog.la
+Index: git/source/util/print_uptime/Makefile.am
+===================================================================
+--- git.orig/source/util/print_uptime/Makefile.am
++++ git/source/util/print_uptime/Makefile.am
+@@ -17,16 +17,14 @@
+ # limitations under the License.
+ ##########################################################################
+ 
+-AM_CFLAGS = -fno-exceptions -Wall -Wextra
++AM_CFLAGS = -fno-exceptions -Wall -Wextra -lsafec
+ 
+-lib_LTLIBRARIES = libprint_uptime.la
++lib_LTLIBRARIES = libprint_uptime.la 
+ 
+ libprint_uptime_la_CPPFLAGS = -I$(top_srcdir)/source/include
+ libprint_uptime_la_SOURCES = print_uptime.c
+-libprint_uptime_la_LDFLAGS = -ltelemetry_msgsender
+ 
+ bin_PROGRAMS = print_uptime
+-
+ print_uptime_CPPFLAGS = -I$(top_srcdir)/source/include -I$(top_srcdir)/source/util/print_uptime -I${PKG_CONFIG_SYSROOT_DIR}$(includedir)/dbus-1.0 ${PKG_CONFIG_SYSROOT_DIR}$(libdir)/dbus-1.0/include
+ print_uptime_SOURCES = main.c
+-print_uptime_LDADD = libprint_uptime.la
++print_uptime_LDADD = libprint_uptime.la 
+Index: git/source/service_dhcp/dhcp_server_functions.c
+===================================================================
+--- git.orig/source/service_dhcp/dhcp_server_functions.c
++++ git/source/service_dhcp/dhcp_server_functions.c
+@@ -31,7 +31,7 @@
+ #include "lan_handler.h"
+ #include "util.h"
+ #include "dhcp_server_functions.h"
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ #include "safec_lib_common.h"
+ #include "secure_wrapper.h"
+ 
+Index: git/source/service_dhcp/lan_handler.c
+===================================================================
+--- git.orig/source/service_dhcp/lan_handler.c
++++ git/source/service_dhcp/lan_handler.c
+@@ -27,7 +27,7 @@
+ #include "util.h"
+ #include <sys/time.h>
+ #include "print_uptime.h"
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ #include "safec_lib_common.h"
+ #include <libnet.h>
+ #ifdef FEATURE_SUPPORT_ONBOARD_LOGGING
+Index: git/source/service_dhcp/service_ipv4.c
+===================================================================
+--- git.orig/source/service_dhcp/service_ipv4.c
++++ git/source/service_dhcp/service_ipv4.c
+@@ -26,7 +26,7 @@
+ #include "lan_handler.h"
+ #include "print_uptime.h"
+ #include  "safec_lib_common.h"
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ #include "safec_lib_common.h"
+ #include <arpa/inet.h>
+ #include <libnet.h>
+Index: git/source/service_routed/service_routed.c
+===================================================================
+--- git.orig/source/service_routed/service_routed.c
++++ git/source/service_routed/service_routed.c
+@@ -60,7 +60,7 @@
+ #endif
+ 
+ #include "util.h"
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ #include "syscfg/syscfg.h"
+ #if defined (_HUB4_PRODUCT_REQ_) || defined (RDKB_EXTENDER_ENABLED)
+ #include "utapi.h"
+Index: git/source/service_udhcpc/service_udhcpc.c
+===================================================================
+--- git.orig/source/service_udhcpc/service_udhcpc.c
++++ git/source/service_udhcpc/service_udhcpc.c
+@@ -68,7 +68,7 @@
+ #include <sys/socket.h>
+ #include <stdbool.h>
+ #include <regex.h>
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ #include <stdint.h>
+ #include "secure_wrapper.h"
+ #include  "safec_lib_common.h"
+@@ -548,7 +548,7 @@ static int update_dns_tofile (udhcpc_scr
+ 
+                     printf ("\nuptime %s tok : %s\n", uptime, tok);
+                     OnboardLog("DNS_server_IP_changed:%s\n", uptime);
+-                    t2_event_s("bootuptime_dnsIpChanged_split", uptime);
++                    //t2_event_s("bootuptime_dnsIpChanged_split", uptime);
+                     v_secure_system("echo %s DNS_server_IP_changed:%s >> " CONSOLE_LOG_FILE, utc_time, uptime);
+                     v_secure_system("echo %s >> /tmp/.ipv4dnsserver", tok);
+                 }
+Index: git/source/service_wan/service_wan.c
+===================================================================
+--- git.orig/source/service_wan/service_wan.c
++++ git/source/service_wan/service_wan.c
+@@ -65,7 +65,7 @@
+ #include <sys/sysinfo.h>
+ #include <time.h>
+ #include <sys/time.h>
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ #if PUMA6_OR_NEWER_SOC_TYPE
+ #include "asm-arm/arch-avalanche/generic/avalanche_pp_api.h"
+ #include "netutils.h"
+Index: git/source/util/print_uptime/print_uptime.c
+===================================================================
+--- git.orig/source/util/print_uptime/print_uptime.c
++++ git/source/util/print_uptime/print_uptime.c
+@@ -21,7 +21,7 @@
+ #include <time.h>
+ #include <string.h>
+ #include <stdlib.h>
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ #include "safec_lib_common.h"
+ #include <sys/stat.h>
+ #include "secure_wrapper.h"
+@@ -29,6 +29,10 @@
+ #define DEVICE_PROPS_FILE	"/etc/device.properties"
+ #define DATA_SIZE	1024
+ 
++void t2_event_d(char*eventName, int value)
++{
++ return;
++}
+ int getValueFromDeviceProperties(char *value, int size,char *name)
+ {
+ 	FILE *fp;
+Index: git/source/firewall/Makefile.am
+===================================================================
+--- git.orig/source/firewall/Makefile.am
++++ git/source/firewall/Makefile.am
+@@ -17,7 +17,7 @@
+ # limitations under the License.
+ ##########################################################################
+ AM_CFLAGS = -D_GNU_SOURCE
+-AM_CFLAGS += -pthread
++AM_CFLAGS += -pthread  -lsafec
+ AM_CPPFLAGS = -I$(top_srcdir)/source/include -I$(top_srcdir)/source/util/utils $(DBUS_CFLAGS)
+ AM_LDFLAGS = -lccsp_common -lsecure_wrapper -lnetfilter_queue -lnfnetlink $(DBUS_LIBS) -pthread -lrt
+ 
+Index: git/source/firewall/firewall.c
+===================================================================
+--- git.orig/source/firewall/firewall.c
++++ git/source/firewall/firewall.c
+@@ -988,6 +988,11 @@ void firewall_log( char* fmt, ...)
+     return;
+ }
+ 
++
++char * get_current_wan_ifname()
++{
++ return NULL;
++}
+ #ifdef WAN_FAILOVER_SUPPORTED
+ unsigned int Get_Device_Mode()
+ {
+Index: git/source/firewall_log/Makefile.am
+===================================================================
+--- git.orig/source/firewall_log/Makefile.am
++++ git/source/firewall_log/Makefile.am
+@@ -16,7 +16,7 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ ##########################################################################
+-AM_CFLAGS =
++AM_CFLAGS = -lsafec
+ 
+ ACLOCAL_AMFLAGS = -I m4
+ 
+Index: git/source/pmon/pmon.c
+===================================================================
+--- git.orig/source/pmon/pmon.c
++++ git/source/pmon/pmon.c
+@@ -39,7 +39,7 @@
+     is they are dead.
+ ===================================================================
+ */
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ #include <stdio.h>
+ #include <string.h>
+ #include <stdlib.h>
+@@ -50,6 +50,10 @@
+ #include <dirent.h>
+ #include "secure_wrapper.h"
+ 
++void t2_event_d(char*eventName, int value)
++{
++	return;
++}
+ /*
+  * Config file format
+  *   <process-name> <pid-file | none> <restart-cmd>
+Index: git/source/include/ulog/ulog.h
+===================================================================
+--- git.orig/source/include/ulog/ulog.h
++++ git/source/include/ulog/ulog.h
+@@ -227,6 +227,7 @@ void ulog_errorf (UCOMP comp, USUBCOMP s
+  */
+ void ulog_get_mesgs (UCOMP comp, USUBCOMP sub, char *mesgbuf, unsigned int size);
+ 
++void t2_event_d(char*eventName, int value);
+ #if 0
+ /*
+  * Procedure     : ulog_runcmd
+Index: git/source/ulog/ulog.c
+===================================================================
+--- git.orig/source/ulog/ulog.c
++++ git/source/ulog/ulog.c
+@@ -438,6 +438,10 @@ void ulog_sys(int prior, const char* fil
+     va_end(ap);
+ }
+ 
++void t2_event_d(char*eventName, int value)
++{
++ return;
++}
+ 
+ #ifdef SAMPLE_MAIN
+ main()
+Index: git/source/trigger/trigger.c
+===================================================================
+--- git.orig/source/trigger/trigger.c
++++ git/source/trigger/trigger.c
+@@ -50,7 +50,7 @@
+ #include <ulog/ulog.h>
+ #include "syscfg/syscfg.h"
+ #include "sysevent/sysevent.h"
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ 
+ #ifdef INCLUDE_BREAKPAD
+ #include "breakpad_wrapper.h"
+Index: git/source/igd/src/Makefile.am
+===================================================================
+--- git.orig/source/igd/src/Makefile.am
++++ git/source/igd/src/Makefile.am
+@@ -20,7 +20,7 @@ AM_CFLAGS =
+ AM_CFLAGS += -D_LINUX
+ AM_CFLAGS += -DPAL_ULOG
+ AM_CFLAGS += -DCONFIG_VENDOR_MODEL=\"\"
+-AM_CFLAGS += -pthread
++AM_CFLAGS += -pthread -lsafec
+ 
+ ACLOCAL_AMFLAGS = -I m4
+ 
+Index: git/source/service_ipv6/Makefile.am
+===================================================================
+--- git.orig/source/service_ipv6/Makefile.am
++++ git/source/service_ipv6/Makefile.am
+@@ -23,7 +23,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/source/inc
+               -I$(top_srcdir)/source/util/utils \
+               $(DBUS_CFLAGS)
+ 
+-AM_LDFLAGS = -lccsp_common -lsecure_wrapper $(DBUS_LIBS)
++AM_LDFLAGS = -lccsp_common -lsecure_wrapper $(DBUS_LIBS) -lsafec
+ 
+ service_ipv6_SOURCES = service_ipv6.c
+ 
+Index: git/source/scripts/init/src/apply_system_defaults/apply_system_defaults.c
+===================================================================
+--- git.orig/source/scripts/init/src/apply_system_defaults/apply_system_defaults.c
++++ git/source/scripts/init/src/apply_system_defaults/apply_system_defaults.c
+@@ -59,7 +59,7 @@
+ #include <cjson/cJSON.h>
+ #include  "safec_lib_common.h"
+ 
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ #define PARTNERS_INFO_FILE  							"/nvram/partners_defaults.json"
+ #define PARTNERS_INFO_FILE_ETC                                                 "/etc/partners_defaults.json"
+ #define BOOTSTRAP_INFO_FILE                                                    "/nvram/bootstrap.json"
+@@ -823,16 +823,16 @@ static int get_PartnerID (char *PartnerI
+ 	if( 0 == getFactoryPartnerId( buf ) )
+ 	{
+ 		APPLY_PRINT("[GET-PARTNERID] Factory_PartnerID:%s\n", buf );
+-                t2_event_s("getfactorypartner_split", buf);
++                //t2_event_s("getfactorypartner_split", buf);
+ 	}
+    	else
+     {
+        APPLY_PRINT("[GET-PARTNERID] Factory_PartnerID:NULL\n" );
+-       t2_event_s("getfactorypartner_split", NULL);
++      // t2_event_s("getfactorypartner_split", NULL);
+    	}
+ 
+ 	APPLY_PRINT("[GET-PARTNERID] Current_PartnerID:%s\n", PartnerID );
+-        t2_event_s("getcurrentpartner_split", PartnerID);
++       // t2_event_s("getcurrentpartner_split", PartnerID);
+ 	
+ 	return 0;	
+ }
+@@ -2576,7 +2576,7 @@ int main( int argc, char **argv )
+    int   isMigrationReq = 0;
+    int retryCount = RETRY_COUNT + 1;
+ 
+-   t2_init("apply_system_defaults");
++   //t2_init("apply_system_defaults");
+ 
+    syscfg_dirty = 0;
+ 
+Index: git/source/scripts/init/src/apply_system_defaults/apply_system_defaults_syscfg.c
+===================================================================
+--- git.orig/source/scripts/init/src/apply_system_defaults/apply_system_defaults_syscfg.c
++++ git/source/scripts/init/src/apply_system_defaults/apply_system_defaults_syscfg.c
+@@ -44,7 +44,7 @@
+ #include <stdbool.h>
+ #include <cjson/cJSON.h>
+ #include "apply_system_defaults_helper.h"
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ 
+ #define PARTNERS_INFO_FILE                                "/nvram/partners_defaults.json"
+ #define PARTNERS_INFO_FILE_ETC                            "/etc/partners_defaults.json"
+@@ -102,7 +102,7 @@ int main( int argc, char **argv )
+     int   isMigrationReq = 0;
+     int   retryCount = RETRY_COUNT;
+ 
+-    t2_init("apply_system_defaults");
++    //t2_init("apply_system_defaults");
+     //Fill basic contents
+     server_port = SE_SERVER_WELL_KNOWN_PORT;
+ 
+Index: git/source/scripts/init/src/apply_system_defaults_psm/apply_system_defaults_psm.c
+===================================================================
+--- git.orig/source/scripts/init/src/apply_system_defaults_psm/apply_system_defaults_psm.c
++++ git/source/scripts/init/src/apply_system_defaults_psm/apply_system_defaults_psm.c
+@@ -44,7 +44,7 @@
+ #include <stdbool.h>
+ #include <cjson/cJSON.h>
+ #include "apply_system_defaults_helper.h"
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ #define PARTNERS_INFO_FILE                                "/nvram/partners_defaults.json"
+ #define PARTNERS_INFO_FILE_ETC                            "/etc/partners_defaults.json"
+ #define BOOTSTRAP_INFO_FILE                               "/nvram/bootstrap.json"
+@@ -99,7 +99,7 @@ int main( int argc, char **argv )
+     int   isMigrationReq = 0;
+     int retryCount = RETRY_COUNT;
+ 
+-    t2_init("apply_system_defaults");
++    //t2_init("apply_system_defaults");
+     //Fill basic contents
+     server_port = SE_SERVER_WELL_KNOWN_PORT;
+ 
+Index: git/source/scripts/init/src/apply_system_defaults_helper.c
+===================================================================
+--- git.orig/source/scripts/init/src/apply_system_defaults_helper.c
++++ git/source/scripts/init/src/apply_system_defaults_helper.c
+@@ -64,7 +64,7 @@
+ #include <ccsp_base_api.h>
+ #include "ccsp_memory.h"
+ #include "apply_system_defaults_helper.h"
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ 
+ #define PARTNERS_INFO_FILE                            "/nvram/partners_defaults.json"
+ #define PARTNERS_INFO_FILE_ETC                        "/etc/partners_defaults.json"
+@@ -868,15 +868,15 @@ int get_PartnerID (char *PartnerID)
+ 	if( 0 == getFactoryPartnerId( buf ) )
+ 	{
+ 		APPLY_PRINT("[GET-PARTNERID] Factory_PartnerID:%s\n", buf );
+-                t2_event_s("getfactorypartner_split", buf);
++                //t2_event_s("getfactorypartner_split", buf);
+ 	}
+    	else
+     {
+        APPLY_PRINT("[GET-PARTNERID] Factory_PartnerID:NULL\n" );
+-       t2_event_s("getfactorypartner_split", NULL);
++       //t2_event_s("getfactorypartner_split", NULL);
+    	}
+ 	APPLY_PRINT("[GET-PARTNERID] Current_PartnerID:%s\n", PartnerID );
+-        t2_event_s("getcurrentpartner_split", PartnerID);
++        //t2_event_s("getcurrentpartner_split", PartnerID);
+ 	
+ 	return 0;
+ }
+Index: git/source/service_multinet/ev_access.c
+===================================================================
+--- git.orig/source/service_multinet/ev_access.c
++++ git/source/service_multinet/ev_access.c
+@@ -38,7 +38,7 @@
+ #include "sysevent/sysevent.h"
+ #include <stdio.h>
+ #include <string.h>
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ #include "safec_lib_common.h"
+ 
+ token_t sysevent_token_interactive;
+Index: git/source/service_dslite/Makefile.am
+===================================================================
+--- git.orig/source/service_dslite/Makefile.am
++++ git/source/service_dslite/Makefile.am
+@@ -18,7 +18,7 @@ bin_PROGRAMS = service_dslite
+ 
+ service_dslite_SOURCES = service_dslite.c
+ service_dslite_CFLAGS = -I$(top_srcdir)/source -I$(top_srcdir)/source/include -I$(top_srcdir)/source/util/utils
+-service_dslite_LDFLAGS = -levent -levent_core -levent_extra -lpthread -lsecure_wrapper
++service_dslite_LDFLAGS = -levent -levent_core -levent_extra -lpthread -lsecure_wrapper -lsafec
+ service_dslite_LDADD = $(top_builddir)/source/util/utils/libutopiautil.la \
+                        $(top_builddir)/source/services/lib/libsrvmgr.la \
+                        $(top_builddir)/source/sysevent/lib/libsysevent.la \
+Index: git/source/service_deviceMode/service_devicemode.c
+===================================================================
+--- git.orig/source/service_deviceMode/service_devicemode.c
++++ git/source/service_deviceMode/service_devicemode.c
+@@ -55,7 +55,7 @@
+ #include <sys/socket.h>
+ #include <stdbool.h>
+ #include <regex.h>
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ #include <stdint.h>
+ #include "ccsp_dm_api.h"
+ #include "ccsp_custom.h"
+Index: git/source/scripts/init/src/execute_dir/Makefile.am
+===================================================================
+--- git.orig/source/scripts/init/src/execute_dir/Makefile.am
++++ git/source/scripts/init/src/execute_dir/Makefile.am
+@@ -23,6 +23,7 @@ AM_CFLAGS = -I$(top_srcdir)/source/inclu
+ AM_LDFLAGS = $(top_builddir)/source/services/lib/libsrvmgr.la \
+              $(top_builddir)/source/sysevent/lib/libsysevent.la \
+              $(top_builddir)/source/syscfg/lib/libsyscfg.la \
++	     -lsafec \
+              $(top_builddir)/source/ulog/libulog.la
+ 
+ bin_PROGRAMS = execute_dir

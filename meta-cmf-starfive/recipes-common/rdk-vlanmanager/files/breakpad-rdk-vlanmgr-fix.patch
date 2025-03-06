@@ -1,0 +1,35 @@
+Index: git/source/RdkVlanManager/ssp_main.c
+===================================================================
+--- git.orig/source/RdkVlanManager/ssp_main.c
++++ git/source/RdkVlanManager/ssp_main.c
+@@ -65,10 +65,11 @@
+ #include <systemd/sd-daemon.h>
+ #endif
+ 
++#if 0
+ #ifdef INCLUDE_BREAKPAD
+ #include "breakpad_wrapper.h"
+ #endif
+-
++#endif
+ extern char*                                pComponentName;
+ char                                        g_Subsystem[32]         = {0};
+ extern ANSC_HANDLE bus_handle;
+@@ -280,6 +281,8 @@ int main(int argc, char* argv[])
+         fclose(fd);
+     }
+ 
++
++#if 0
+ #ifdef INCLUDE_BREAKPAD
+     breakpad_ExceptionHandler();
+     signal(SIGALRM, sig_handler);
+@@ -299,7 +302,7 @@ int main(int argc, char* argv[])
+     signal(SIGHUP, sig_handler);
+     signal(SIGALRM, sig_handler);
+ #endif /*  INCLUDE_BREAKPAD */
+-
++#endif
+     cmd_dispatch('e');
+ #ifdef _COSA_SIM_
+     subSys = "";        /* PC simu use empty string as subsystem */

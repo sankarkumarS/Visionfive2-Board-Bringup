@@ -1,0 +1,13 @@
+Index: dropbear-2020.81/svr-authpubkey.c
+===================================================================
+--- dropbear-2020.81.orig/svr-authpubkey.c
++++ dropbear-2020.81/svr-authpubkey.c
+@@ -64,7 +64,7 @@
+ #include "ssh.h"
+ #include "packet.h"
+ #include "algo.h"
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ 
+ #if DROPBEAR_SVR_PUBKEY_AUTH
+ 

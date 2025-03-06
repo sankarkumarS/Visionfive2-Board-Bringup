@@ -1,0 +1,56 @@
+Index: git/source/ccsp_message_bus_client_tool.c
+===================================================================
+--- git.orig/source/ccsp_message_bus_client_tool.c
++++ git/source/ccsp_message_bus_client_tool.c
+@@ -50,7 +50,7 @@
+ #include <ccsp_psm_helper.h>
+ 
+ // TELEMETRY 2.0 //RDKB-25996
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ 
+ #ifdef UNIT_TEST_DOCKER_SUPPORT
+ #define STATIC
+@@ -59,7 +59,7 @@
+ #endif
+ 
+ #ifdef INCLUDE_BREAKPAD
+-#include "breakpad_wrapper.h"
++//#include "breakpad_wrapper.h"
+ #endif
+ 
+ #ifndef SAFEC_DUMMY_API
+@@ -896,14 +896,6 @@ STATIC int apply_cmd(PCMD_CONTENT pInput
+                   {
+                      printf(color_error"Ccsp msg bus internal error %d \n"color_end,ret);
+                   }
+-	          if(ret == CCSP_ERR_NOT_CONNECT)
+-	          {
+-	             t2_event_d("SYS_ERROR_CCSPBus_error190", 1);	
+-	          }
+-	          else if(ret == CCSP_ERR_TIMEOUT)
+-	          {
+-	             t2_event_d("SYS_ERROR_CCSPBus_error191", 1);
+-	          }
+ 	       }
+                return 1;
+             }     
+@@ -2235,7 +2227,7 @@ int main (int argc, char *argv[])
+ 
+     runSteps = __LINE__;
+ #ifdef INCLUDE_BREAKPAD
+-    breakpad_ExceptionHandler();
++    //breakpad_ExceptionHandler();
+ #else
+     enable_ccsp_exception_handlers();
+ #endif
+Index: git/source/Makefile.am
+===================================================================
+--- git.orig/source/Makefile.am
++++ git/source/Makefile.am
+@@ -24,4 +24,4 @@ bin_PROGRAMS = dmcli
+ 
+ dmcli_CPPFLAGS =
+ dmcli_SOURCES = ccsp_message_bus_client_tool.c
+-dmcli_LDFLAGS = -ltelemetry_msgsender -lccsp_common
++dmcli_LDFLAGS =  -lccsp_common

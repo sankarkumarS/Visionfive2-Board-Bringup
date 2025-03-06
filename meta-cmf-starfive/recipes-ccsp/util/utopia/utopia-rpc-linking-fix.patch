@@ -1,0 +1,20 @@
+Index: git/source/util/rpc/client/Makefile.am
+===================================================================
+--- git.orig/source/util/rpc/client/Makefile.am
++++ git/source/util/rpc/client/Makefile.am
+@@ -25,4 +25,4 @@ bin_PROGRAMS = rpcclient
+ 
+ rpcclient_SOURCES = command.c rpc_specification_client.c rpc_specification_clnt.c rpc_specification_xdr.c
+ 
+-rpcclient_LDFLAGS = -pthread
++rpcclient_LDFLAGS = -pthread -ltirpc
+Index: git/source/util/rpc/server/Makefile.am
+===================================================================
+--- git.orig/source/util/rpc/server/Makefile.am
++++ git/source/util/rpc/server/Makefile.am
+@@ -23,3 +23,5 @@ ACLOCAL_AMFLAGS = -I m4
+ bin_PROGRAMS = rpcserver
+ 
+ rpcserver_SOURCES = rpc_specification_server.c rpc_specification_svc.c rpc_specification_xdr.c
++
++rpcserver_LDFLAGS = -pthread -ltirpc

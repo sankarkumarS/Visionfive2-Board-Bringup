@@ -1,0 +1,151 @@
+Index: git/source/ImageHealthChecker/IHC_Client.c
+===================================================================
+--- git.orig/source/ImageHealthChecker/IHC_Client.c
++++ git/source/ImageHealthChecker/IHC_Client.c
+@@ -20,6 +20,7 @@
+ #include "ImagehealthChecker.h"
+ void report_t2(char * event,char type,char *val)
+ {
++#if 0
+     if (type == 's')
+     {
+         if(T2ERROR_SUCCESS != t2_event_s(event, val))
+@@ -34,6 +35,8 @@ void report_t2(char * event,char type,ch
+             IHC_PRINT("%s T2 send Failed\n",__FUNCTION__);
+         }
+     }
++#endif
++    return;
+ }
+ int fnd_cli_diff(int old_val,int new_val)
+ {
+Index: git/source/TandDSsp/ssp_main.c
+===================================================================
+--- git.orig/source/TandDSsp/ssp_main.c
++++ git/source/TandDSsp/ssp_main.c
+@@ -41,7 +41,7 @@
+ 
+ #include "ssp_global.h"
+ #ifdef INCLUDE_BREAKPAD
+-#include "breakpad_wrapper.h"
++//#include "breakpad_wrapper.h"
+ #endif
+ #include "stdlib.h"
+ #include "safec_lib_common.h"
+@@ -337,7 +337,7 @@ int main(int argc, char* argv[])
+     if ( bRunAsDaemon )
+         daemonize();
+ #ifdef INCLUDE_BREAKPAD
+-    breakpad_ExceptionHandler();
++    //breakpad_ExceptionHandler();
+ #else
+ 
+     signal(SIGTERM, sig_handler);
+Index: git/source/util/rxtx_100.c
+===================================================================
+--- git.orig/source/util/rxtx_100.c
++++ git/source/util/rxtx_100.c
+@@ -28,7 +28,7 @@
+ #include <syscfg/syscfg.h>
+ #include "safec_lib_common.h"
+ #include "secure_wrapper.h"
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ #include <sys/stat.h>
+ #include <sys/socket.h>
+ #include <sys/ioctl.h>
+@@ -383,7 +383,7 @@ int main(int argc,char *argv[])
+        return 0;
+     }
+ 
+-    t2_init("RxTx100");
++    //t2_init("RxTx100");
+ /* Open log fd, ensure to close after done*/
+     log_fd = fopen(LOG_FILE , "a+");
+     if (!log_fd)
+@@ -398,7 +398,7 @@ int main(int argc,char *argv[])
+     }
+     fclose(log_fd);
+ 
+-    t2_uninit();
++    //t2_uninit();
+ }
+ 
+ int start_rxtx()
+@@ -531,7 +531,7 @@ static int start_rxtx_interface()
+                     write_to_logfile("Error in populating telemetry eventName\n");
+                     continue;
+                 }
+-                t2_event_s(eventName,buf);
++                //t2_event_s(eventName,buf);
+             }
+             else
+             {
+@@ -681,7 +681,7 @@ static int start_rxtx_port()
+                     write_to_logfile("Error in populating telemetry eventName\n");
+                     continue;
+                 }
+-                t2_event_s(eventName,buf);
++                //t2_event_s(eventName,buf);
+             }
+             else
+             {
+@@ -951,7 +951,7 @@ int ret = SUCCESS;
+ /* Getting interface stats from HAL API platform_hal_GetInterfaceStats */
+     INTF_STATS intfStats;
+     memset(&intfStats,0,sizeof(intfStats));
+-    ret = platform_hal_GetInterfaceStats(ifname, &intfStats);
++  //  ret = platform_hal_GetInterfaceStats(ifname, &intfStats);
+     if (ret == SUCCESS)
+     {
+         *rx_bytes = intfStats.rx_bytes;
+Index: git/source/util/Makefile.am
+===================================================================
+--- git.orig/source/util/Makefile.am
++++ git/source/util/Makefile.am
+@@ -32,7 +32,8 @@ endif
+ 
+ RxTx100_SOURCES = rxtx_100.c
+ RxTx100_CPPFLAGS = -I$(top_srcdir)/source -I$(top_srcdir)/source/util
+-RxTx100_LDFLAGS = -lsyscfg -lsecure_wrapper -ltelemetry_msgsender -lhal_platform
++#RxTx100_LDFLAGS = -lsyscfg -lsecure_wrapper -ltelemetry_msgsender -lhal_platform
++RxTx100_LDFLAGS = -lsyscfg -lsecure_wrapper  -lhal_platform
+ if CORE_NET_LIB_FEATURE_SUPPORT
+ RxTx100_LDFLAGS += -lnet
+ endif
+Index: git/source/ImageHealthChecker/ImagehealthChecker.h
+===================================================================
+--- git.orig/source/ImageHealthChecker/ImagehealthChecker.h
++++ git/source/ImageHealthChecker/ImagehealthChecker.h
+@@ -24,7 +24,7 @@
+ #include "ccsp_trace.h"
+ #include "secure_wrapper.h"
+ #include "ImageHealthChecker_bus_connection.h"
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ 
+ #define  STR_HLTH "store-health"
+ #define  BT_CHCK  "bootup-check"
+Index: git/source/ImageHealthChecker/ImagehealthChecker.c
+===================================================================
+--- git.orig/source/ImageHealthChecker/ImagehealthChecker.c
++++ git/source/ImageHealthChecker/ImagehealthChecker.c
+@@ -1820,7 +1820,7 @@ int main(int argc,char* argv[])
+         exit(0);
+     }
+ 
+-    t2_init("TandD");
++    //t2_init("TandD");
+     ccsp_hdl_ret = ccsp_handler_init();
+     if ( 0 != ccsp_hdl_ret )
+     {
+Index: git/source/ImageHealthChecker/Makefile.am
+===================================================================
+--- git.orig/source/ImageHealthChecker/Makefile.am
++++ git/source/ImageHealthChecker/Makefile.am
+@@ -22,4 +22,4 @@ bin_PROGRAMS = ImageHealthChecker
+ ImageHealthChecker_SOURCES = ImagehealthChecker.c  ImagehealthChecker.h IHC_Client.c  ImageHealthChecker_bus_connection.h ImageHealthChecker_bus_connection.c
+ ImageHealthChecker_CFLAGS = -I${PKG_CONFIG_SYSROOT_DIR}$(includedir)/rbus $(DBUS_CFLAGS)
+ ImageHealthChecker_LDFLAGS = $(DBUS_LIBS)
+-ImageHealthChecker_LDFLAGS += -lccsp_common -lpthread -lsyscfg -lrbus -lsecure_wrapper -ltelemetry_msgsender -lprivilege -lhal_ethsw
++ImageHealthChecker_LDFLAGS += -lccsp_common -lpthread -lsyscfg -lrbus -lsecure_wrapper  -lhal_ethsw

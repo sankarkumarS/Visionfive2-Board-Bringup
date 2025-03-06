@@ -1,0 +1,40 @@
+Index: git/source/WanManager/wanmgr_main.c
+===================================================================
+--- git.orig/source/WanManager/wanmgr_main.c
++++ git/source/WanManager/wanmgr_main.c
+@@ -72,7 +72,7 @@
+ #ifdef ENABLE_SD_NOTIFY
+ #include <systemd/sd-daemon.h>
+ #endif
+-
++#if 0
+ #ifdef INCLUDE_BREAKPAD
+ #include "breakpad_wrapper.h"
+ #endif
+@@ -80,7 +80,8 @@
+ #ifdef ENABLE_FEATURE_TELEMETRY2_0
+ #include <telemetry_busmessage_sender.h>
+ #endif
+-
++#endif
++#include "cap.h"
+ cap_user appcaps;
+ 
+ extern char*                                pComponentName;
+@@ -335,6 +336,7 @@ int main(int argc, char* argv[])
+         fclose(fd);
+     }
+ 
++#if 0
+ #ifdef INCLUDE_BREAKPAD
+     breakpad_ExceptionHandler();
+ #else
+@@ -352,7 +354,7 @@ int main(int argc, char* argv[])
+     signal(SIGQUIT, sig_handler);
+     signal(SIGHUP, sig_handler);
+ #endif //INCLUDE_BREAKPAD
+-
++#endif
+     cmd_dispatch('e');
+ #ifdef _COSA_SIM_
+     subSys = "";        /* PC simu use empty string as subsystem */

@@ -1,0 +1,24 @@
+Index: git/source/Ssp/ssp_main.c
+===================================================================
+--- git.orig/source/Ssp/ssp_main.c
++++ git/source/Ssp/ssp_main.c
+@@ -58,7 +58,7 @@
+ #endif
+ 
+ #ifdef INCLUDE_BREAKPAD
+-#include "breakpad_wrapper.h"
++//#include "breakpad_wrapper.h"
+ #endif
+ #include "syscfg/syscfg.h"
+ #include "cap.h"
+@@ -351,8 +351,8 @@ int main(int argc, char* argv[])
+     signal(SIGTERM, sig_handler);
+ 
+ #ifdef INCLUDE_BREAKPAD
+-    breakpad_ExceptionHandler();
+-    signal(SIGUSR1, sig_handler);
++    //breakpad_ExceptionHandler();
++   // signal(SIGUSR1, sig_handler);
+ #else
+     if (is_core_dump_opened())
+     {

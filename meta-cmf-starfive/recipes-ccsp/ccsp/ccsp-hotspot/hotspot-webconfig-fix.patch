@@ -1,0 +1,54 @@
+Index: git/source/HotspotApi/libHotspotApi.h
+===================================================================
+--- git.orig/source/HotspotApi/libHotspotApi.h
++++ git/source/HotspotApi/libHotspotApi.h
+@@ -25,7 +25,7 @@
+ #include <stdlib.h>
+ #include <stdbool.h>
+ 
+-#include "webconfig_framework.h"
++//#include "webconfig_framework.h"
+ 
+ typedef struct
+ {
+@@ -88,7 +88,7 @@ typedef void (*callbackHotspot)(tunnelSe
+ void register_callbackHotspot(callbackHotspot ptr_reg_callback);
+ void callbackWCConfirmVap(tunnelSet_t  *tunnelSet);
+ 
+-pErr setHotspot( void* const network);
++int setHotspot( void* const network);
+ int deleteHotspot();
+ int confirmVap();
+ size_t calculateTimeout(size_t numOfEntries);
+Index: git/source/HotspotApi/HotspotApi.c
+===================================================================
+--- git.orig/source/HotspotApi/HotspotApi.c
++++ git/source/HotspotApi/HotspotApi.c
+@@ -20,12 +20,12 @@
+ #include <netinet/in.h>
+ #include "libHotspot.h"
+ #include "libHotspotApi.h"
+-#include "webconfig_framework.h"
++//#include "webconfig_framework.h"
+ #include "ccsp_psm_helper.h"
+ #include "ansc_platform.h"
+ #include "safec_lib_common.h"
+ 
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ 
+ /**************************************************************************/
+ /*      GLOBAL and STATIC  VARIABLES                                      */
+Index: git/source/HotspotApi/HotspotLib.c
+===================================================================
+--- git.orig/source/HotspotApi/HotspotLib.c
++++ git/source/HotspotApi/HotspotLib.c
+@@ -20,7 +20,7 @@
+ 
+ #include "libHotspot.h"
+ #include "libHotspotApi.h"
+-#include "webconfig_framework.h"
++//#include "webconfig_framework.h"
+ 
+ #define ARRAY_SIZE(x) (sizeof(x)/sizeof((x)[0]))
+ 

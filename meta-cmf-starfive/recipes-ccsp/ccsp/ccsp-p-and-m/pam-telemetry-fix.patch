@@ -1,0 +1,77 @@
+Index: git/source/PandMSsp/Makefile.am
+===================================================================
+--- git.orig/source/PandMSsp/Makefile.am
++++ git/source/PandMSsp/Makefile.am
+@@ -34,4 +34,4 @@ CcspPandMSsp_CPPFLAGS = -I$(top_srcdir)/
+                         -I$(top_srcdir)/source-arm/TR-181/board_sbapi 
+ 
+ CcspPandMSsp_SOURCES = ssp_messagebus_interface.c ssp_main.c ssp_action.c dm_pack_datamodel.c
+-CcspPandMSsp_LDFLAGS = -lccsp_common -ldl -rdynamic -lwebconfig_framework -ltelemetry_msgsender -lsecure_wrapper $(SYSTEMD_LDFLAGS) -lsyscfg -lpthread
++CcspPandMSsp_LDFLAGS = -lccsp_common -ldl -rdynamic -lwebconfig_framework  -lsecure_wrapper $(SYSTEMD_LDFLAGS) -lsyscfg -lpthread
+Index: git/source/PandMSsp/ssp_main.c
+===================================================================
+--- git.orig/source/PandMSsp/ssp_main.c
++++ git/source/PandMSsp/ssp_main.c
+@@ -71,7 +71,7 @@
+ #include "webconfig_framework.h"
+ #include "secure_wrapper.h"
+ #include "safec_lib_common.h"
+-#include "telemetry_busmessage_sender.h"
++//#include "telemetry_busmessage_sender.h"
+ 
+ #define DEBUG_INI_NAME  "/etc/debug.ini"
+ // With WAN boot time optimization, in few cases P&M initialization is further delayed
+@@ -666,7 +666,7 @@ if(id != 0)
+ #endif
+ #endif
+ 
+-   t2_init("CcspPandM");
++   //t2_init("CcspPandM");
+    ret = cmd_dispatch('e');
+    if(ret != 0)
+    {
+Index: git/source/TR-181/middle_layer_src/plugin_main_apis.c
+===================================================================
+--- git.orig/source/TR-181/middle_layer_src/plugin_main_apis.c
++++ git/source/TR-181/middle_layer_src/plugin_main_apis.c
+@@ -124,7 +124,7 @@
+ #ifndef NO_WIFI_FEATURE_SUPPORT
+ #include "libHotspotApi.h"
+ #endif
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ 
+ #ifdef DSLITE_FEATURE_SUPPORT
+ #include "cosa_dslite_apis.h"
+@@ -814,7 +814,7 @@ static void CheckAndSetRebootReason()
+         if (NULL != fpBootLogFile)
+         {
+             fprintf(fpBootLogFile, "Received reboot_reason as:%s\n", rebootReason);
+-	    t2_event_s("rdkb_rebootreason_split", rebootReason);
++	    //t2_event_s("rdkb_rebootreason_split", rebootReason);
+             fclose(fpBootLogFile);
+         }
+         else
+Index: git/source-arm/TR-181/board_sbapi/cosa_dhcpv6_apis.c
+===================================================================
+--- git.orig/source-arm/TR-181/board_sbapi/cosa_dhcpv6_apis.c
++++ git/source-arm/TR-181/board_sbapi/cosa_dhcpv6_apis.c
+@@ -2943,7 +2943,7 @@ static int _write_dibbler_sent_option_fi
+         {
+             if (g_sent_options[i].bEnabled)
+ #if !defined(_64BIT_ARCH_SUPPORT_)
+-                    fprintf(fp, "%lu:%d:%s\n",
++                    fprintf(fp, "%lu:%ld:%s\n",
+ #else
+                     fprintf(fp, "%lu:%zu:%s\n",
+ #endif
+Index: git/source-arm/TR-181/board_sbapi/Makefile.am
+===================================================================
+--- git.orig/source-arm/TR-181/board_sbapi/Makefile.am
++++ git/source-arm/TR-181/board_sbapi/Makefile.am
+@@ -98,4 +98,4 @@ libCcspPandM_board_sbapi_la_SOURCES +=
+     speedboost_scheduler_apis.c
+ endif
+ 
+-libCcspPandM_board_sbapi_la_LDFLAGS = -lccsp_common -ltime_conversion -lwebconfig_framework -lmsgpackc -lHotspotApi
++libCcspPandM_board_sbapi_la_LDFLAGS = -lccsp_common  -lwebconfig_framework -lmsgpackc -lHotspotApi

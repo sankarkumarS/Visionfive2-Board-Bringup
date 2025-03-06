@@ -1,0 +1,70 @@
+Index: git/source/ulog/ulog.c
+===================================================================
+--- git.orig/source/ulog/ulog.c
++++ git/source/ulog/ulog.c
+@@ -56,6 +56,52 @@
+ #define ULOG_FILE   "/var/log/messages"
+ #define ULOG_IDENT  "UTOPIA"
+ 
++#define  _sprintf_s_chk  _sprintf_s_chk1
++#define _strcat_s_chk _strcat_s_chk1
++// Dummy _sprintf_s_chk function
++int _sprintf_s_chk1(char *dest, size_t dmax, const char *format, ...) {
++    // Ensure the destination buffer and format are valid
++    if (dest == NULL || format == NULL) {
++        return -1;  // Error: invalid argument
++    }
++
++    va_list args;
++    int ret;
++
++    // Start argument processing
++    va_start(args, format);
++
++    // Use snprintf to safely copy the formatted string into the destination buffer
++    ret = vsnprintf(dest, dmax, format, args);
++
++    va_end(args);
++
++    // Return the number of characters written (excluding the null terminator)
++    if (ret < 0 || ret >= dmax) {
++        return -1;  // Error or truncated string
++    }
++
++    return ret;  // Success
++}
++
++
++errno_t _strcat_s_chk1(char *dest, size_t dmax, const char *src, size_t slen) {
++    // Ensure the destination buffer and source string are valid
++    if (dest == NULL || src == NULL) {
++        return -1;  // Invalid argument error
++    }
++
++    // Check if the destination buffer is large enough to hold the concatenated string
++    size_t dest_len = strlen(dest);
++    if (dest_len + slen + 1 > dmax) {  // +1 for null terminator
++        return -1;  // Error: destination buffer is too small
++    }
++
++    // Safely concatenate the source string to the destination buffer
++    strncat(dest, src, slen);  // strncat ensures we don't overrun the buffer
++
++    return 0;  // Success
++}
+ static _sys_Log_Info sys_Log_Info = {"", 0, LOG_INFO, 1, 0, NULL};
+ 
+ static const char *getcomp (UCOMP comp)
+Index: git/source/sysevent/lib/libsysevent.c
+===================================================================
+--- git.orig/source/sysevent/lib/libsysevent.c
++++ git/source/sysevent/lib/libsysevent.c
+@@ -68,7 +68,7 @@
+ #include <fcntl.h>
+ #include "libsysevent_internal.h"
+ #include <stdlib.h>
+-#include "secure_wrapper.h"
++//#include "secure_wrapper.h"
+ 
+ // how many times does library attempt to connect to a non blocking socket returning EINPROGRESS
+ #define NUM_CONNECT_ATTEMPTS 10   

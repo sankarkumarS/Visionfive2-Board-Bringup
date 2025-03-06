@@ -1,0 +1,1 @@
+INCOMPATIBLE_LICENSE_EXCEPTIONS += "binutils:GPL-3.0-only libbfd:GPL-3.0-only libopcodes:GPL-3.0-only"

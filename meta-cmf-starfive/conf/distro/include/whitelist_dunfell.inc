@@ -1,0 +1,1 @@
+WHITELIST_GPL-3.0 += " binutils libbfd"

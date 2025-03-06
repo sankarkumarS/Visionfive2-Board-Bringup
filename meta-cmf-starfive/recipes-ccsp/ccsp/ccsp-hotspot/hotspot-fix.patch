@@ -1,0 +1,196 @@
+Index: git/source/HotspotApi/HotspotApi.c
+===================================================================
+--- git.orig/source/HotspotApi/HotspotApi.c
++++ git/source/HotspotApi/HotspotApi.c
+@@ -25,7 +25,7 @@
+ #include "ansc_platform.h"
+ #include "safec_lib_common.h"
+ 
+-#include <telemetry_busmessage_sender.h>
++//#include <telemetry_busmessage_sender.h>
+ 
+ /**************************************************************************/
+ /*      GLOBAL and STATIC  VARIABLES                                      */
+@@ -559,18 +559,6 @@ static void addBrideAndVlan(int vlanInde
+ 
+      sys_execute_cmd(cmdBuf);
+ 
+-     if(vlanIndex == VLAN_INDEX_1){
+-         t2_event_d("XWIFI_VLANID_6_split", wan_vlan);
+-     }
+-     if(vlanIndex == VLAN_INDEX_3){
+-         t2_event_d("XWIFI_VLANID_10_split", wan_vlan);
+-     }
+-     if(vlanIndex == VLAN_INDEX_4){
+-         t2_event_d("XWIFI_VLANID_19_split", wan_vlan);
+-     }
+-     if(vlanIndex == VLAN_INDEX_5){
+-         t2_event_d("XWIFI_VLANID_21_split", wan_vlan);
+-     }
+ }
+ 
+ int getHotspotVapIndex(char *vapName) {
+Index: git/source/hotspotfd/cosa_hotspot_dml.c
+===================================================================
+--- git.orig/source/hotspotfd/cosa_hotspot_dml.c
++++ git/source/hotspotfd/cosa_hotspot_dml.c
+@@ -70,7 +70,6 @@
+ #include "cosa_hotspot_dml.h"
+ #include "dhcpsnooper.h"
+ 
+-#include <telemetry_busmessage_sender.h>
+ #include "safec_lib_common.h"
+ #include <ctype.h>
+ #define MAC_ADDRESS_BYTES 18
+@@ -142,13 +141,11 @@ BOOL HotspotConnectedDevice_SetParamStri
+ 	if (1 == l_iAddOrDelete)
+ 	{
+ 	        CcspTraceInfo(("Added case, Client with MAC:%s will be added\n", l_cMacAddr));
+-	        t2_event_d("WIFI_INFO_Hotspot_client_connected", 1);
+ 		updateRssiForClient(l_cMacAddr, l_iRssi);
+ 	}
+ 	else
+ 	{
+ 	        CcspTraceInfo(("Removal case, Client with MAC:%s will be removed \n", l_cMacAddr));
+-	        t2_event_d("WIFI_INFO_Hotspot_client_disconnected", 1);
+ 		snoop_RemoveClientListEntry(l_cMacAddr);
+ 	}
+     return TRUE;
+Index: git/source/hotspotfd/dhcpsnooper.c
+===================================================================
+--- git.orig/source/hotspotfd/dhcpsnooper.c
++++ git/source/hotspotfd/dhcpsnooper.c
+@@ -52,7 +52,6 @@
+ #include "debug.h"
+ #include "dhcp.h"
+ #include "ansc_platform.h"
+-#include <telemetry_busmessage_sender.h>
+ #include "safec_lib_common.h"
+ #include "libHotspot.h"
+ 
+@@ -680,7 +679,6 @@ static void snoop_CheckClientIsPrivate(c
+         if (!strcasecmp(pRemote_id, l_cDhcpClientAddr))
+         {
+             CcspTraceInfo(("Private Client Check: Xfinitywifi Client :%s was a private client \n", pRemote_id));
+-	    t2_event_d("WIFI_INFO_ClientTransitionToXfininityWifi", 1);
+             break;
+         }
+     }
+@@ -779,7 +777,6 @@ static void snoop_AddClientListEntry(cha
+                         }
+         } else {
+             CcspTraceError(("Max. number of clients %d already in list\n", gSnoopNumberOfClients));
+-            t2_event_d("SYS_INFO_Hotspot_MaxClients", 1);
+         }
+     } else {
+         msg_debug("Client %s already in list.\n", pRemote_id);
+Index: git/source/hotspotfd/hotspotfd.c
+===================================================================
+--- git.orig/source/hotspotfd/hotspotfd.c
++++ git/source/hotspotfd/hotspotfd.c
+@@ -79,7 +79,6 @@
+ #include "dhcpsnooper.h"
+ #include "safec_lib_common.h"
+ #include "secure_wrapper.h"
+-#include <telemetry_busmessage_sender.h>
+ 
+ #ifdef UNIT_TEST_DOCKER_SUPPORT
+ #define STATIC
+@@ -2042,10 +2041,8 @@ Try_primary:
+                     } 
+ 
+ 		    CcspTraceInfo(("Create Primary GRE Tunnel with endpoint:%s\n", gpPrimaryEP));
+-		    t2_event_d("SYS_INFO_Create_GRE_Tunnel", 1);
+                     memset(telemetry_buf, 0, sizeof(telemetry_buf));
+                     snprintf(telemetry_buf, sizeof(telemetry_buf), "%s-Primary", gpPrimaryEP);
+-                    t2_event_s("XWIFI_Active_Tunnel", telemetry_buf);
+ 
+ 
+                     if (sysevent_set(sysevent_fd_gs, sysevent_token_gs, 
+@@ -2116,7 +2113,6 @@ Try_primary:
+ 					CcspTraceInfo(("Primary GRE Tunnel Endpoint :%s is not alive Switching to Secondary Endpoint :%s\n", gpPrimaryEP,gpSecondaryEP));
+                     memset(telemetry_buf, 0, sizeof(telemetry_buf));
+                     snprintf(telemetry_buf, sizeof(telemetry_buf), "%s-Secondary", gpSecondaryEP);
+-                    t2_event_s("XWIFI_Active_Tunnel", telemetry_buf);
+ 
+                     if(ssid_reset_mask == 0)
+                     {
+@@ -2197,7 +2193,6 @@ Try_secondary:
+ 					CcspTraceInfo(("Max. Secondary EP time:%d exceeded. Switching to Primary EP\n", gSecondaryMaxTime));
+                     memset(telemetry_buf, 0, sizeof(telemetry_buf));
+                     snprintf(telemetry_buf, sizeof(telemetry_buf), "%s-Primary", gpPrimaryEP);
+-                    t2_event_s("XWIFI_Active_Tunnel", telemetry_buf);
+ 
+                     // TODO: Do we just destroy this tunnel and move over
+                     // to the primary? What if the Primary is down then we switched
+@@ -2303,7 +2298,6 @@ Try_secondary:
+ 
+                             CcspTraceError(("sysevent set %s failed on secondary\n", kHotspotfd_tunnelEP));
+                         }
+-                        t2_event_s("XWIFI_Active_Tunnel", "No Tunnel");
+ 
+ 			/*Signal wifi module for tunnel down */
+                         notify_tunnel_status("Down");
+Index: git/source/HotspotApi/Makefile.am
+===================================================================
+--- git.orig/source/HotspotApi/Makefile.am
++++ git/source/HotspotApi/Makefile.am
+@@ -23,6 +23,6 @@ AM_CFLAGS += -I$(top_srcdir)/source/incl
+ AM_CFLAGS += -I$(top_srcdir)/source/util
+ AM_CFLAGS += -DWBCFG_MULTI_COMP_SUPPORT
+ 
+-AM_LDFLAGS = -lpthread -lz -lsysevent -lsyscfg -lulog -llmapi -lnetfilter_queue -lnfnetlink -lccsp_common -ltelemetry_msgsender -ljansson
++AM_LDFLAGS = -lpthread -lz -lsysevent -lsyscfg -lulog -llmapi -lnetfilter_queue -lnfnetlink -lccsp_common  -ljansson
+ 
+ libHotspotApi_la_SOURCES = libHotspot.h libHotspotApi.h HotspotApi.c HotspotLib.c HotspotJansson.c
+Index: git/source/hotspotfd/Makefile.am
+===================================================================
+--- git.orig/source/hotspotfd/Makefile.am
++++ git/source/hotspotfd/Makefile.am
+@@ -23,7 +23,7 @@ AM_CFLAGS += -I$(top_srcdir)/source/incl
+ AM_CFLAGS += -I$(top_srcdir)/source/util 
+ AM_CFLAGS += -I$(top_srcdir)/source/hotspotfd/include
+ 
+-AM_LDFLAGS = -lpthread -lz -lsysevent -lsyscfg -lulog -llmapi -lnetfilter_queue -lnfnetlink -lccsp_common -ltelemetry_msgsender -lsecure_wrapper
++AM_LDFLAGS = -lpthread -lz -lsysevent -lsyscfg -lulog -llmapi -lnetfilter_queue -lnfnetlink -lccsp_common  -lsecure_wrapper
+ CcspHotspot_SOURCES = hotspotfd.c dhcpsnooper.c ssp_messagebus_interface.c ssp_main.c ssp_action.c cosa_hotspot_dml.c plugin_main.c dm_pack_datamodel.c
+ 
+ AM_CFLAGS += -I$(top_srcdir)/source/HotspotApi
+@@ -33,4 +33,4 @@ AM_CFLAGS += -I${PKG_CONFIG_SYSROOT_DIR}
+ AM_CFLAGS += -DWAN_FAILOVER_SUPPORTED
+ AM_LDFLAGS += -lrbus
+ endif
+-CcspHotspot_LDADD = ${top_builddir}/source/HotspotApi/libHotspotApi.la
+\ No newline at end of file
++CcspHotspot_LDADD = ${top_builddir}/source/HotspotApi/libHotspotApi.la
+Index: git/source/XfinityTestAgent/Makefile.am
+===================================================================
+--- git.orig/source/XfinityTestAgent/Makefile.am
++++ git/source/XfinityTestAgent/Makefile.am
+@@ -23,5 +23,5 @@ AM_CFLAGS += -I$(top_srcdir)/source/incl
+ AM_CFLAGS += -I$(top_srcdir)/source/util 
+ AM_CFLAGS += -I$(top_srcdir)/source/hotspotfd/include
+ 
+-AM_LDFLAGS = -lpthread -lz -lsysevent -lsyscfg -lulog -llmapi -lnetfilter_queue -lnfnetlink -lccsp_common -ltelemetry_msgsender -lsecure_wrapper -lprivilege
++AM_LDFLAGS = -lpthread -lz -lsysevent -lsyscfg -lulog -llmapi -lnetfilter_queue -lnfnetlink -lccsp_common  -lsecure_wrapper -lprivilege
+ xfinitytest_SOURCES = tunnelcheck.c
+Index: git/source/hotspotfd/ssp_main.c
+===================================================================
+--- git.orig/source/hotspotfd/ssp_main.c
++++ git/source/hotspotfd/ssp_main.c
+@@ -42,7 +42,6 @@
+ #include "hotspotfd.h"
+ #include "secure_wrapper.h"
+ #include "safec_lib_common.h"
+-#include <telemetry_busmessage_sender.h>
+ 
+ #ifdef INCLUDE_BREAKPAD
+ #include "breakpad_wrapper.h"
+@@ -207,7 +206,6 @@ int main(int argc, char* argv[])
+ 
+     debugLogFile = stderr;
+ 
+-    t2_init("ccsp-hotspot");
+ 
+      for (idx = 1; idx < argc; idx++)
+     {
